@@ -1,0 +1,44 @@
+# C CURVE
+
+import turtle
+
+def draw_c_curve(turtle, x1, y1, x2, y2, depth):
+    if depth == 0:
+        turtle.penup()
+        turtle.goto(x1, y1)
+        turtle.pendown()
+        turtle.goto(x2, y2)
+    else:
+        # Calculate the midpoint and adjust it to form a right angle
+        xm = (x1 + x2) / 2 + (y2 - y1) / 2
+        ym = (y1 + y2) / 2 - (x2 - x1) / 2
+        draw_c_curve(turtle, x1, y1, xm, ym, depth - 1)
+        draw_c_curve(turtle, xm, ym, x2, y2, depth - 1)
+
+def main():
+    # Set up the window and turtle
+    window = turtle.Screen()
+    window.bgcolor("white")
+    window.title("C Curve Fractal")
+    pen = turtle.Turtle()
+    pen.speed(0)
+    pen.hideturtle()
+    
+    # Parameters for the C Curve
+    depth = 7  # The depth of the fractal recursion
+    length = 400  # Length of the line
+    starting_x = -length / 2  # Starting x coordinate
+    starting_y = 0  # Starting y coordinate
+    
+    # Calculate ending coordinates based on length
+    ending_x = starting_x + length
+    ending_y = starting_y
+    
+    # Draw the C Curve
+    draw_c_curve(pen, starting_x, starting_y, ending_x, ending_y, depth)
+    
+    # Finish up
+    turtle.done()
+
+if __name__ == "__main__":
+    main()
