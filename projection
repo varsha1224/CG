@@ -1,0 +1,148 @@
+#include <windows.h>
+#include <GL/glut.h>
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+
+GLfloat ex = 0.0, ey = 0.0, ez = -3.0;
+
+void init()
+{
+    glEnable(GL_DEPTH_TEST);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    glFrustum(-4.0, 4.0, -4.0, 4.0, 1.0, 10.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    gluLookAt(ex, ey, ez, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+}
+
+GLfloat vertices[8][3]={
+    {-1.0, -1.0, 1.0},     {-1.0, 1.0, 1.0},    {1.0, 1.0, 1.0},
+    {1.0, -1.0, 1.0},    {-1.0, -1.0, -1.0},     {-1.0, 1.0, -1.0},
+    {1.0, 1.0, -1.0},    {1.0, -1.0, -1.0}
+};
+
+GLfloat colors[8][3]={
+    {0.0, 0.0, 0.0},{1.0, 0.0, 0.0},
+    {1.0, 1.0, 0.0},{0.0, 1.0, 0.0},
+    {0.0, 0.0, 1.0},{1.0, 0.0, 1.0},
+    {1.0, 1.0, 1.0},{0.0, 1.0, 1.0}
+};
+
+void quad(int a, int b, int c, int d)
+{
+    glBegin(GL_QUADS);
+        glVertex3fv(vertices[a]);
+        glVertex3fv(vertices[b]);
+        glVertex3fv(vertices[c]);
+        glVertex3fv(vertices[d]);
+    glEnd();
+}
+
+void drawFigure()
+{
+    glColor3f(1.0, 1.0, 1.0);
+    glColor3fv(colors[0]);
+    quad(0, 1, 2, 3);
+    glColor3fv(colors[1]);
+    quad(0, 3, 7, 4);
+    glColor3fv(colors[2]);
+    quad(1, 2, 6, 5);
+    glColor3fv(colors[3]);
+    quad(3, 2, 6, 7);
+    glColor3fv(colors[4]);
+    quad(0, 1, 5, 4);
+    glColor3fv(colors[5]);
+    quad(4, 5, 6, 7);
+
+}
+
+static void display(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3d(1, 0, 0);
+
+    drawFigure();
+
+    glutSwapBuffers();
+}
+
+
+static void key(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+        case 27 :
+        case 'q':
+            exit(0);
+            break;
+
+        case '+':
+            ez += 1;
+            break;
+
+        case '-':
+            ez -= 1;
+            break;
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(ex, ey, ez, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    glutPostRedisplay();
+}
+
+static void key_x_y(int key, int x, int y)
+{
+    switch (key)
+    {
+        case GLUT_KEY_LEFT:
+            ex -= 1;
+            break;
+
+        case GLUT_KEY_RIGHT:
+            ex += 1;
+            break;
+
+        case GLUT_KEY_UP:
+            ey += 1;
+            break;
+
+        case GLUT_KEY_DOWN:
+            ey -= 1;
+            break;
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(ex, ey, ez, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+    glutPostRedisplay();
+}
+
+int main(int argc, char *argv[])
+{
+    glutInit(&argc, argv);
+    glutInitWindowSize(640,480);
+    glutInitWindowPosition(10,10);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+
+    glutCreateWindow("GLUT 3D CUBOID");
+
+    glutDisplayFunc(display);
+    init();
+    glutKeyboardFunc(key);
+    glutSpecialFunc(key_x_y);
+
+
+
+    glutMainLoop();
+
+    return EXIT_SUCCESS;
+}
